@@ -27,7 +27,8 @@ const INK_SOFT = "#5B4036"; // warm brown body text
 const IVORY = "#FFF9F0"; // card surface
 const SHELL = "#EAD6B6"; // hairlines on cream
 const MAROON = "#7A1526";
-const MAROON_DEEP = "#4E0B18"; // page velvet
+const MAROON_DEEP = "#4E0B18"; // footer band, gold-button text
+const PAGE_BG = "#7E2434"; // email background — a lighter maroon
 const WINE = "#8E1B3A";
 const GOLD = "#C8962E";
 const GOLD_LIGHT = "#E6C77A";
@@ -164,9 +165,9 @@ ${FOOTER.brand}`;
 <title>${escapeHtml(subject)}</title>
 ${fontFaces()}
 </head>
-<body style="margin:0;padding:0;background:${MAROON_DEEP};">
+<body style="margin:0;padding:0;background:${PAGE_BG};">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(preheader)}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${MAROON_DEEP}" style="background:${MAROON_DEEP};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${PAGE_BG}" style="background:${PAGE_BG};">
 <tr><td align="center" style="padding:32px 12px;">
 
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="${IVORY}" style="width:100%;max-width:600px;background:${IVORY};border:1px solid ${GOLD};border-radius:16px;overflow:hidden;">
