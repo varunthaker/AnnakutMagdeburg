@@ -68,6 +68,16 @@ export const FAQS = [
   },
 ];
 
+// Food offering sign-up sheet, linked from the confirmation email.
+export const FOOD_OFFERING = {
+  url: 'https://docs.google.com/spreadsheets/d/1wUTjuETuu3MAosAstviaHeLwNqep8Ka4/edit?gid=1062253241#gid=1062253241',
+  kicker: 'Annakut Offering',
+  heading: 'Would you like to offer food?',
+  message:
+    'If you would like to offer food for the Annakut, please fill in your details in the food list below so we can arrange the offerings together.',
+  cta: 'Open Food Offering List',
+};
+
 export const PEOPLE = [
   {
     name: 'Varun Thakkar',
