@@ -22,7 +22,17 @@ All text (event details, contacts, FAQ, venue) lives in `src/data/data.ts`.
 4. Deploy to Vercel and add the same env vars there. The cron in `vercel.json` pings
    `/api/keepalive` so the free Supabase project does not pause.
 
-Registrations can be viewed in the Supabase table editor (`registration_summary` view).
+## Admin dashboard (`/admin`)
+
+Organisers sign in at `https://<your-domain>/admin` to see the totals (registrations,
+persons, adults, children), search all registrations and **Download Excel** (`.xlsx` with a
+"Registrations" sheet incl. totals row and a "Summary" sheet).
+
+To give someone access: Supabase → Authentication → Users → **Add user** (email + password).
+They can then sign in at `/admin`.
+
+Recommended: Authentication → Sign In / Providers → turn **off** "Allow new users to sign up",
+so only users you create can sign in.
 
 ## Development
 
