@@ -1,0 +1,105 @@
+import { useState } from 'react'
+import {
+  Dialog, DialogTitle, DialogContent, IconButton, Typography,
+  useMediaQuery, useTheme,
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { useRsvpStore } from '../../store/rsvpStore'
+import { isRegistrationOpenNow } from '../../utils/registrationGate'
+import { C } from '../../theme/theme'
+import RsvpForm from './RsvpForm'
+import SectionDivider from '../common/SectionDivider'
+import RegistrationClosed from './RegistrationClosed'
+
+export default function RsvpModal() {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const modalOpen = useRsvpStore((s) => s.modalOpen)
+  const closeModal = useRsvpStore((s) => s.closeModal)
+
+  // Re-check the registration gate each time the modal transitions to open,
+  // snapshotting the result for the lifetime of that open. Uses React's
+  // "adjust state during render" pattern rather than an effect (which would
+  // trip react-hooks/set-state-in-effect); see brief deviation note.
+  const [open, setOpen] = useState(true)
+  const [wasOpen, setWasOpen] = useState(false)
+  // Once submitted, the confirmation panel supplies its own heading, so the
+  // dialog header collapses to just the close button.
+  const [submitted, setSubmitted] = useState(false)
+  if (modalOpen !== wasOpen) {
+    setWasOpen(modalOpen)
+    if (modalOpen) {
+      setOpen(isRegistrationOpenNow())
+      setSubmitted(false)
+    }
+  }
+
+  return (
+    <Dialog
+      open={modalOpen}
+      onClose={closeModal}
+      maxWidth="sm"
+      fullWidth
+      fullScreen={isMobile}
+      scroll="paper"
+      aria-labelledby={submitted ? "rsvp-confirmation-title" : "rsvp-dialog-title"}
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: isMobile ? 0 : '22px',
+            bgcolor: C.ivory,
+            border: `1px solid ${C.shell}`,
+            boxShadow: '0 8px 40px rgba(74,55,40,0.18)',
+            overflow: 'clip',
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0, left: 0, right: 0,
+              height: '4px',
+              background: `linear-gradient(90deg, ${C.lilacDeep}, ${C.maroon}, ${C.gold}, ${C.maroon}, ${C.lilacDeep})`,
+              zIndex: 1,
+            },
+          },
+        },
+      }}
+    >
+      <DialogTitle id="rsvp-dialog-header" sx={{ textAlign: 'center', pt: { xs: 3.5, md: 4 }, px: { xs: 2, md: 4 }, pb: 0, position: 'relative' }}>
+        <IconButton
+          onClick={closeModal}
+          size="small"
+          aria-label="Close"
+          sx={{ position: 'absolute', top: 12, right: 12, color: C.inkSoft }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+        {!submitted && (
+          <>
+            <Typography
+              component="span"
+              sx={{
+                display: 'block', fontSize: '0.68rem', letterSpacing: '0.18em',
+                textTransform: 'uppercase', color: C.gold, fontWeight: 600, mb: 1,
+              }}
+            >
+              {open ? 'Reserve your place' : 'Registration'}
+            </Typography>
+            <Typography id="rsvp-dialog-title" variant="h2" component="p" sx={{ fontSize: { xs: '1.6rem', md: '2rem' }, lineHeight: 1.2 }}>
+              Registration
+            </Typography>
+            <SectionDivider sx={{ mt: 1.5, mb: 1 }} />
+          </>
+        )}
+      </DialogTitle>
+      {/* '&&' beats MUI's `.MuiDialogTitle-root + .MuiDialogContent-root { padding-top: 0 }`;
+          without top padding the first field's floating label is clipped by this scroll container. */}
+      <DialogContent sx={{ px: { xs: 2, md: 4 }, pb: 4, '&&': { pt: 2 } }}>
+        {open ? (
+          <RsvpForm onClose={closeModal} onSubmitted={() => setSubmitted(true)} />
+        ) : (
+          <RegistrationClosed onClose={closeModal} />
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}

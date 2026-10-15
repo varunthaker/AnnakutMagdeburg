@@ -1,0 +1,94 @@
+/* ── Traditional Annakut palette ──
+   Single source of truth: src/theme/theme.ts (the `C` object). Mirrored
+   here as CSS custom properties for raw CSS. */
+:root {
+  --ivory: #FFF9F0;
+  --parchment: #F8ECDA;
+  --maroon: #7A1526;
+  --saffron: #E07A1F;
+  --rani: #C2185B;
+  --gold: #C8962E;
+  --gold-light: #E6C77A;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+body {
+  overflow-x: hidden;
+  /* Deep maroon velvet with a faint gold dot weave, like the curtain. */
+  background-color: #4E0B18;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(230, 199, 122, 0.08) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: var(--gold-light);
+  color: var(--maroon);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Cinematic motion ── */
+@keyframes kenBurns {
+  from { transform: scale(1.12) translate3d(0, 0, 0); }
+  to   { transform: scale(1.17) translate3d(0, -1%, 0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes heroReveal {
+  from { opacity: 0; transform: scale(1.04); }
+  to   { opacity: 1; transform: scale(1); }
+}
+/* Gold light sweeping across the calligraphic title. */
+@keyframes sheen {
+  0%, 35% { background-position: 120% 0; }
+  65%, 100% { background-position: -20% 0; }
+}
+/* Sparkles drift upward and twinkle, like diya embers. */
+@keyframes ember {
+  0%   { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+  15%  { opacity: 1; }
+  70%  { opacity: 0.8; }
+  100% { transform: translate3d(var(--drift, 12px), -180px, 0) scale(1); opacity: 0; }
+}
+
+/* Scroll reveal (see src/components/common/Reveal.tsx). */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/* Soft light rays falling on the stage. */
+@keyframes rays {
+  0%, 100% { opacity: 0.35; transform: rotate(-2deg); }
+  50%      { opacity: 0.6;  transform: rotate(2deg); }
+}
+/* Gold edge that glints across cards on hover. */
+@keyframes glint {
+  from { background-position: -150% 0; }
+  to   { background-position: 250% 0; }
+}
