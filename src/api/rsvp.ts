@@ -6,7 +6,7 @@ export interface RsvpInput {
   dialCode: string
   /** Optional — a blank value is stored as null. */
   phone: string
-  /** Additional adults beyond the registrant (0–3). */
+  /** Total adults in the party, registrant included (1–5). */
   extraAdults: number
   /** Children in the party (0–4). */
   children: number

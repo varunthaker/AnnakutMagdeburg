@@ -60,7 +60,7 @@ export const FAQS = [
   },
   {
     q: 'Can I bring my family?',
-    a: 'Yes - enter the number of adults and children in the registration form.',
+    a: 'Yes - in the registration form, enter the total number of adults (including yourself) and children.',
   },
   {
     q: 'Where exactly is the hall?',

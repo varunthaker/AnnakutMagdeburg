@@ -4,7 +4,7 @@ import { EVENT, PEOPLE, FOOTER, FOOD_OFFERING } from "../src/data/data";
 export interface RegistrationRecord {
   name: string;
   email: string;
-  /** Additional adults beyond the registrant. */
+  /** Total adults in the party, registrant included. */
   extra_adults: number;
   children: number;
 }
@@ -100,8 +100,8 @@ function contactsHtml(): string {
 }
 
 function partySizeOf(record: RegistrationRecord): number {
-  // The registrant is always one adult on top of extra_adults.
-  return 1 + record.extra_adults + record.children;
+  // extra_adults already holds the total adults, registrant included.
+  return record.extra_adults + record.children;
 }
 
 function row(label: string, value: string, last = false): string {

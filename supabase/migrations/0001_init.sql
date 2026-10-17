@@ -18,15 +18,14 @@ drop table    if exists public.rsvps         cascade;
 -- registrations -------------------------------------------------------
 -- One row per household that signs up.
 --
--- The two count columns hold exactly what the form's "Additional members"
--- dropdowns hold, so both start at 0. The registrant is always one adult on
--- top of extra_adults; registration_summary below derives the real totals.
+-- extra_adults holds the TOTAL number of adults, registrant included (the
+-- form's "Adults (including you)" value, 1–5); children is 0–4.
 create table public.registrations (
   id           uuid primary key default gen_random_uuid(),
   name         text not null,
   email        text not null,
   phone        text,
-  extra_adults int  not null default 0 check (extra_adults between 0 and 3),
+  extra_adults int  not null default 0 check (extra_adults between 0 and 5),
   children     int  not null default 0 check (children     between 0 and 4),
   consent      boolean not null,
   created_at   timestamptz not null default now()
@@ -47,16 +46,16 @@ create policy "authenticated can read registrations"
   using (true);
 
 -- registration_summary -------------------------------------------------
--- Organiser view with the registrant folded into the adult count.
+-- Organiser view; extra_adults is already the total adult count.
 -- security_invoker = on, so anon (no select policy) sees nothing;
 -- service_role bypasses RLS either way.
 create view public.registration_summary
   with (security_invoker = on)
   as
   select id, created_at, name, email, phone,
-         extra_adults + 1                as adults,
+         extra_adults                    as adults,
          children,
-         extra_adults + children + 1     as party_size
+         extra_adults + children         as party_size
   from public.registrations
   order by created_at desc;
 

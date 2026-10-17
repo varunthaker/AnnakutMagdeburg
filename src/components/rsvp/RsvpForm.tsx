@@ -20,9 +20,9 @@ import { rsvpFormStyles as s } from "./RsvpForm.styles";
 type Status = "idle" | "submitting" | "error" | "success";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// The registrant is always one adult, so the extra-adult dropdown stops one
-// short of the 4-adult / 4-child party limit.
-const MAX_EXTRA_ADULTS = 3;
+// Guests pick the total number of adults *including themselves* (1–5).
+// That total is stored as-is in the extra_adults column.
+const MAX_ADULTS = 5;
 const MAX_CHILDREN = 4;
 
 // Kill MUI menu open/close transitions in tests and keep interaction snappy.
@@ -60,14 +60,14 @@ export default function RsvpForm({ onClose, onSubmitted }: Props) {
   const [consent, setConsent] = useState(false);
   const [company, setCompany] = useState(""); // honeypot
 
-  const [extraAdults, setExtraAdults] = useState(0);
+  const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
   const [submitError, setSubmitError] = useState("");
 
-  const partySize = 1 + extraAdults + children;
+  const partySize = adults + children;
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -104,7 +104,7 @@ export default function RsvpForm({ onClose, onSubmitted }: Props) {
       email,
       dialCode,
       phone,
-      extraAdults,
+      extraAdults: adults,
       children,
       consent,
     };
@@ -182,19 +182,19 @@ export default function RsvpForm({ onClose, onSubmitted }: Props) {
         </Box>
       </Box>
 
-      <Typography sx={s.memberHeading}>Additional members</Typography>
+      <Typography sx={s.memberHeading}>Who is coming?</Typography>
 
       <Box sx={s.memberGrid}>
         <TextField
           select
-          label="Adults"
-          value={extraAdults}
-          onChange={(e) => setExtraAdults(Number(e.target.value))}
+          label="Adults (including you)"
+          value={adults}
+          onChange={(e) => setAdults(Number(e.target.value))}
           slotProps={SELECT_SLOT_PROPS}
           size="small"
           fullWidth
         >
-          {countOptions(MAX_EXTRA_ADULTS).map((n) => (
+          {countOptions(MAX_ADULTS).filter((n) => n >= 1).map((n) => (
             <MenuItem key={n} value={n}>
               {n}
             </MenuItem>
@@ -218,9 +218,9 @@ export default function RsvpForm({ onClose, onSubmitted }: Props) {
       </Box>
 
       <Typography sx={s.memberCount}>
-        You plus {extraAdults + children} other
-        {extraAdults + children === 1 ? "" : "s"} - {partySize} attending in
-        total.
+        {partySize} attending in total: {adults} adult{adults === 1 ? "" : "s"}{" "}
+        (including you)
+        {children > 0 && ` and ${children} child${children === 1 ? "" : "ren"}`}.
       </Typography>
 
       {/* Honeypot — visually hidden, not tab-reachable */}

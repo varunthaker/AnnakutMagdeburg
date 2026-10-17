@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase'
 
-/** One row of the `registration_summary` view (registrant folded into adults). */
+/** One registration, with extra_adults read as the total adults (registrant included). */
 export interface RegistrationRow {
   id: string
   created_at: string
@@ -14,11 +14,15 @@ export interface RegistrationRow {
 
 export async function fetchRegistrations(): Promise<RegistrationRow[]> {
   const { data, error } = await supabase
-    .from('registration_summary')
-    .select('*')
+    .from('registrations')
+    .select('id, created_at, name, email, phone, extra_adults, children')
     .order('created_at', { ascending: false })
   if (error) throw new Error(error.message)
-  return data ?? []
+  return (data ?? []).map(({ extra_adults, ...r }) => ({
+    ...r,
+    adults: extra_adults,
+    party_size: extra_adults + r.children,
+  }))
 }
 
 /** Stored as "49 17612345678"; shown as "+49 17612345678". */
